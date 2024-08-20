@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Django Mail Sender</title>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #222;
+            margin: 0;
+        }
+
+        .rotating-text {
+            font-family: 'Lato', sans-serif;
+            font-weight: 600;
+            font-size: 36px;
+            color: white;
+            position: relative;
+            white-space: nowrap;
+        }
+
+        .rotating-text .word {
+            display: inline-block;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            white-space: nowrap;
+        }
+
+        .rotating-text .word:first-child {
+            opacity: 1; /* "Thanks" starts visible */
+        }
+
+        .rotating-text .letter {
+            display: inline-block;
+            transform-origin: center center 25px;
+            transition: transform 0.3s ease-in-out;
+        }
+
+        .rotating-text .out {
+            transform: rotateX(90deg);
+        }
+
+        .rotating-text .in {
+            transform: rotateX(0deg);
+            opacity: 1;
+        }
+
+        /* Color Palette */
+        .alizarin { color: #e74c3c; }
+        .wisteria { color: #8e44ad; }
+        .peter-river { color: #3498db; }
+        .emerald { color: #2ecc71; }
+        .sun-flower { color: #f1c40f; }
+    </style>
+</head>
+<body>
+    <div class="rotating-text">
+        <span class="word alizarin">Thanks</span>
+        <span class="word wisteria">for</span>
+        <span class="word peter-river">using</span>
+        <span class="word emerald">Django</span>
+        <span class="word sun-flower">Mail</span>
+        <span class="word alizarin">Sender</span>
+        <span class="word wisteria">!!</span>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const words = document.querySelectorAll('.rotating-text .word');
+            let currentWordIndex = 0;
+
+            function rotateText() {
+                const currentWord = words[currentWordIndex];
+                const nextWordIndex = (currentWordIndex + 1) % words.length;
+                const nextWord = words[nextWordIndex];
+
+                // Skip hiding "Thanks"
+                if (currentWordIndex !== 0) {
+                    Array.from(currentWord.children).forEach((letter, i) => {
+                        setTimeout(() => {
+                            letter.classList.add('out');
+                        }, i * 50);
+                    });
+
+                    setTimeout(() => {
+                        Array.from(nextWord.children).forEach((letter, i) => {
+                            letter.classList.remove('out');
+                            letter.classList.add('in');
+                            nextWord.style.opacity = '1';
+                        });
+                    }, 200 + currentWord.children.length * 50);
+                } else {
+                    // Just show the next word without animating out "Thanks"
+                    Array.from(nextWord.children).forEach((letter, i) => {
+                        letter.classList.remove('out');
+                        letter.classList.add('in');
+                        nextWord.style.opacity = '1';
+                    });
+                }
+
+                currentWordIndex = nextWordIndex;
+            }
+
+            words.forEach((word, index) => {
+                const letters = Array.from(word.textContent).map(letter => {
+                    const span = document.createElement('span');
+                    span.classList.add('letter');
+                    span.textContent = letter;
+                    return span;
+                });
+                word.textContent = '';
+                word.append(...letters);
+
+                // Skip animation for the first word "Thanks"
+                if (index > 0) {
+                    word.style.opacity = '0';
+                }
+            });
+
+            setInterval(rotateText, 400);
+        });
+    </script>
+</body>
+</html>

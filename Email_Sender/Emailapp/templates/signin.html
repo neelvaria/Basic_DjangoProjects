@@ -1,0 +1,80 @@
+{% load static %}
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="{% static 'assets/css/signup.css' %}">
+    </head>
+    <body>
+        <div class="container">
+            <div class="emoji normal-emoji">🐵</div>
+            <div class="emoji closed-emoji">🙈</div>
+            <div class="emoji open-emoji">🙉</div>
+            <div class="emoji click-emoji">🙊</div>
+            
+            <h1>Login</h1>
+            <h4>Enter a Email & Password you have <br>entered during signup process!!</h4>
+            <form action="{% url 'index' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="text" name="email" id="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password:</label>
+                    <input type="password" name="password" id="password" required>
+                </div>
+                <button id="button" type="submit">Signup</button>
+            </form>
+        </div>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                // Function to handle emoji display based on input focus
+                function handleEmojiChange(event) {
+                    const normalEmoji = document.querySelector('.normal-emoji');
+                    const openEmoji = document.querySelector('.open-emoji');
+                    const closedEmoji = document.querySelector('.closed-emoji');
+                    const clickEmoji = document.querySelector('.click-emoji');
+            
+                    // Hide all emojis
+                    normalEmoji.style.display = 'none';
+                    openEmoji.style.display = 'none';
+                    closedEmoji.style.display = 'none';
+                    clickEmoji.style.display = 'none';
+            
+                    // Display the appropriate emoji based on the focused input
+                    if (event.target.id === 'email') {
+                        openEmoji.style.display = 'block';
+                    } else if (event.target.id === 'password') {
+                        closedEmoji.style.display = 'block';
+                    } else if(event.target.id === 'button') {
+                        clickEmoji.style.display = 'block';
+                    }
+                }
+            
+                // Add event listeners to inputs
+                document.getElementById('email').addEventListener('focus', handleEmojiChange);
+                document.getElementById('password').addEventListener('focus', handleEmojiChange);
+                document.getElementById('button').addEventListener('focus',handleEmojiChange);
+            
+                // Show normal emoji when no field is focused
+                document.querySelectorAll('input').forEach(input => {
+                    input.addEventListener('blur', () => {
+                        setTimeout(() => { // Delay to ensure blur event is processed
+                            const focusedElement = document.activeElement;
+                            if (focusedElement !== document.getElementById('email') && focusedElement !== document.getElementById('password')) {
+                                const normalEmoji = document.querySelector('.normal-emoji');
+                                normalEmoji.style.display = 'block';
+                                document.querySelector('.open-emoji').style.display = 'none';
+                                document.querySelector('.closed-emoji').style.display = 'none';
+                            }
+                        }, 100); // Delay in milliseconds
+                    });
+                });
+            });
+        </script>
+    </body>
+</html>
